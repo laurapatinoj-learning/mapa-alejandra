@@ -48,13 +48,40 @@ Si pagas con Apple Pay y llega también el SMS, el backend lo detecta como dupli
 
 **4. Resúmenes** — programa en tu nube un cron: `GET /reports/daily?push=true` (p. ej. 8 p. m.) y `GET /reports/weekly?push=true` (domingos).
 
+## Plan 50/30/20 sobre tu salario neto
+```bash
+curl -X PUT https://TU_DOMINIO/plan -H "X-API-Key: $API_KEY" -H "Content-Type: application/json" \
+  -d '{"month":"2026-11","gross_salary":3516000}'
+```
+Descuenta 4 % salud y 4 % pensión → **neto $3.234.720**: Necesidades $1.617.360 · Deseos $970.416 · Ahorro $646.944.
+Repite el comando cada mes (o cuando cambie tu salario). Las categorías se asignan así (editable con
+`PUT /categories/{categoria}/bucket`): **Necesidades** = Alimentación, Transporte, Salud, Servicios;
+**Deseos** = Domicilios, Suscripciones, Compras en línea, Hogar y compras, Entretenimiento, Otros.
+
+## Despliegue en Fly.io (recomendado: ~US$2–5/mes, HTTPS incluido, disco persistente)
+```bash
+brew install flyctl && fly auth signup          # o fly auth login
+cd finanzas
+# edita app = "..." en fly.toml con un nombre único
+fly launch --no-deploy --copy-config --name TU_NOMBRE
+fly volumes create finanzas_data --size 1 --region mia
+fly secrets set API_KEY=$(openssl rand -hex 32)  # guarda esta clave: la usarás en los Atajos
+fly deploy
+curl https://TU_NOMBRE.fly.dev/health
+```
+Alternativa: un VPS de US$5 (Hetzner/DigitalOcean) con `docker run` + Caddy para HTTPS.
+Tus datos financieros viven en ese volumen: no compartas la API key ni el dominio.
+
 ## Reglas de alerta
-- **Sin presupuesto**: una compra en una categoría sin tope en ese mes dispara "no se está considerando el presupuesto".
+- **Sin presupuesto**: si no hay plan 50/30/20 ni tope de categoría para ese mes, la compra dispara "no se está considerando el presupuesto".
+- **Plan 50/30/20**: aviso al 80 % y 100 % de Necesidades y de Deseos, y aviso cuando el gasto total ya compromete tu 20 % de ahorro (90 % y 100 %).
+- Las recargas DaviPlata desde tu cuenta Davivienda se registran como transferencia propia (no suman gasto).
 - **80 %** y **100 %** del tope por categoría (una vez por mes y umbral; si cambias el tope se reinician).
 - Las compras **declinadas** se registran pero no suman al gasto.
 - Categorías en `app/categories.py` (palabras clave editables).
 
 ## Limitaciones conocidas
-- Los SMS de Nu y los de compras aprobadas de Davivienda/DaviPlata aún no tienen muestra real: envíame ejemplos para afinar `app/parser.py`.
+- **Nu no manda SMS, solo notificaciones push de su app, y iOS no permite que Atajos lea notificaciones de otras apps.** Las compras de Nu se capturan solo si la tarjeta está en Apple Wallet y pagas con Apple Pay (automatización de Transacción). El parser de Nu existe y funciona con el texto de la notificación (`/webhook/message`), por si más adelante hay un camino de correo o de pegado manual.
+- Dos compras idénticas (mismo comercio y monto) en menos de ~10 minutos se cuentan como una.
 - iOS puede pedir confirmación en algunas automatizaciones de Mensaje; Transacción de Wallet sí corre sin preguntar.
 - Pagos de Nequi/DaviPlata sin Apple Pay solo se capturan por SMS/notificación.

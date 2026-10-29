@@ -47,3 +47,34 @@ def test_declined_not_counted_and_reports(client):
     assert d["total_spent"] == 20000 and d["declined"] == 1
     w = client.get("/reports/weekly", headers=H).json()
     assert "Resumen semanal" in w["text"] and "Transporte" in w["by_category"]
+
+
+def test_plan_50_30_20_and_alerts(client):
+    month = __import__("datetime").date.today().strftime("%Y-%m")
+    p = client.put("/plan", headers=H, json={"month": month, "gross_salary": 3516000}).json()
+    assert round(p["net"]) == 3234720
+    assert round(p["buckets"]["Necesidades"]["limit"]) == 1617360
+    assert round(p["buckets"]["Deseos"]["limit"]) == 970416
+    assert round(p["savings"]["target"]) == 646944
+
+    # Compra en Deseos que supera el 100 % del tope de Deseos (Alkosto $1.749.050 > $970.416)
+    r = client.post("/webhook/message", headers=H, json={
+        "text": "DAVIVIENDA: Compra . Aprobado(a), $1,749,050, Tarjeta   *3256, Hora 17:39,Lugar ALKOSTO AVX 68  ."}).json()
+    assert any("Deseos" in a and "superaste" in a for a in r["alerts"])
+    assert not any("Sin presupuesto" in a for a in r["alerts"])
+    rep = client.get("/reports/daily", headers=H).json()
+    assert "Plan" in rep["text"] and rep["plan"]["savings"]["on_track"] is False
+
+    # Reclasificar la categoría a Necesidades
+    client.put("/categories/Hogar y compras/bucket", headers=H, json={"bucket": "Necesidades"})
+    assert client.get(f"/plan/{month}", headers=H).json()["buckets"]["Necesidades"]["spent"] == 1749050
+
+
+def test_plan_must_sum_100(client):
+    r = client.put("/plan", headers=H, json={"month": "2026-11", "gross_salary": 1, "needs_pct": 60})
+    assert r.status_code == 422
+
+
+def test_transfer_not_counted(client):
+    client.post("/webhook/message", headers=H, json={"text": "Su DaviPlata fue cargado desde una cuenta Davivienda con $100,000."})
+    assert client.get("/reports/daily", headers=H).json()["total_spent"] == 0

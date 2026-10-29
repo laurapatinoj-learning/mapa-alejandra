@@ -28,6 +28,20 @@ class SmsTx(BaseModel):
     text: str
 
 
+class PlanIn(BaseModel):
+    month: str                  # YYYY-MM
+    gross_salary: float         # salario bruto; se descuentan salud y pensión
+    health_pct: float = 4
+    pension_pct: float = 4
+    needs_pct: float = 50
+    wants_pct: float = 30
+    savings_pct: float = 20
+
+
+class BucketIn(BaseModel):
+    bucket: str  # Necesidades | Deseos
+
+
 class BudgetIn(BaseModel):
     month: str  # YYYY-MM
     category: str
@@ -86,3 +100,28 @@ def get_report(period: str, ref: Optional[date] = None, push: bool = False):
     if push:  # lo invoca un cron diario/semanal
         notify.push("Resumen " + ("diario" if period == "daily" else "semanal"), r["text"])
     return r
+
+
+@app.put("/plan", dependencies=[Depends(auth)])
+def put_plan(p: PlanIn):
+    try:
+        return service.set_plan(p.month, p.gross_salary, p.health_pct, p.pension_pct,
+                                p.needs_pct, p.wants_pct, p.savings_pct)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+
+
+@app.get("/plan/{month}", dependencies=[Depends(auth)])
+def get_plan(month: str):
+    r = service.plan(month)
+    if not r:
+        raise HTTPException(404, "No hay plan para ese mes")
+    return r
+
+
+@app.put("/categories/{category}/bucket", dependencies=[Depends(auth)])
+def put_bucket(category: str, b: BucketIn):
+    if b.bucket not in ("Necesidades", "Deseos"):
+        raise HTTPException(422, "bucket debe ser Necesidades o Deseos")
+    service.set_category_bucket(category, b.bucket)
+    return {"ok": True}

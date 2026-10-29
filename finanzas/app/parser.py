@@ -4,13 +4,13 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
-PURCHASE, DECLINED, INCOME = "purchase", "declined", "income"
+PURCHASE, DECLINED, INCOME, TRANSFER = "purchase", "declined", "income", "transfer"
 
 
 @dataclass
 class Parsed:
     issuer: str
-    kind: str  # purchase | declined | income
+    kind: str  # purchase | declined | income | transfer
     amount: float
     merchant: str
     card: Optional[str] = None
@@ -51,9 +51,18 @@ def _nequi(t: str) -> Optional[Parsed]:
 
 
 def _daviplata(t: str) -> Optional[Parsed]:
-    m = re.search(r"recibir\s+" + _AMOUNT + r"\s+en tu DaviPlata(?:\s+desde\s+(.+?))?\.", t, re.I)
+    if not re.search(r"daviplata", t, re.I):
+        return None
+    # Recarga desde tu propia cuenta Davivienda: movimiento entre tus cuentas, no es gasto ni ingreso
+    m = re.search(r"cargado desde una cuenta\s+(\w+)\s+con\s+" + _AMOUNT, t, re.I)
     if m:
-        return Parsed("DaviPlata", INCOME, parse_amount(m[1]), (m[2] or "otro banco").strip())
+        return Parsed("DaviPlata", TRANSFER, parse_amount(m[2]), f"Recarga desde {m[1]}")
+    m = re.search(r"(?:recibir|recibiste)\s+" + _AMOUNT + r"(?:\s+en tu DaviPlata)?\s+desde\s+(.+?)\.(?:\s|$)", t, re.I)
+    if m:
+        return Parsed("DaviPlata", INCOME, parse_amount(m[1]), m[2].strip())
+    m = re.search(r"(?:Pago|Compra)\s+exitos[oa]\s+con su DaviPlata\s+por\s+(?:(PSE)\s+de\s+)?" + _AMOUNT, t, re.I)
+    if m:
+        return Parsed("DaviPlata", PURCHASE, parse_amount(m[2]), "PSE" if m[1] else "DaviPlata (comercio no indicado)")
     m = re.search(r"(?:pagaste|compraste|retiraste)\s+" + _AMOUNT + r"(?:\s+en\s+(.+?))?\.", t, re.I)
     if m:
         return Parsed("DaviPlata", PURCHASE, parse_amount(m[1]), (m[2] or "DaviPlata").strip())
@@ -61,6 +70,7 @@ def _daviplata(t: str) -> Optional[Parsed]:
 
 
 def _davivienda(t: str) -> Optional[Parsed]:
+    t = re.sub(r"^\s*DAVIVIENDA:\s*", "", t, flags=re.I)
     if not re.search(r"^\s*Compra", t, re.I):
         return None
     amt = re.search(r"\$\s*([\d][\d.,]*)", t)
@@ -75,10 +85,11 @@ def _davivienda(t: str) -> Optional[Parsed]:
 
 
 def _nu(t: str) -> Optional[Parsed]:
-    m = re.search(r"compra\s+(?:por|de)\s+" + _AMOUNT + r"\s+en\s+(.+?)(?:\.|$)", t, re.I)
-    if m and re.search(r"\bNu\b", t):
-        return Parsed("Nu", PURCHASE, parse_amount(m[1]), m[2].strip())
-    return None
+    m = re.search(r"compra en\s+(.+?)\s+por\s+" + _AMOUNT + r"\s+con tu tarjeta terminada en\s+(\d{4})", t, re.I)
+    if not m:
+        return None
+    kind = DECLINED if re.search(r"rechazad|declinad", t, re.I) else PURCHASE
+    return Parsed("Nu", kind, parse_amount(m[2]), m[1].strip(), m[3])
 
 
 _PARSERS = (_nequi, _daviplata, _davivienda, _nu)

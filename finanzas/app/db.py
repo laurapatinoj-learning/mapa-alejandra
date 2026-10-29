@@ -50,3 +50,21 @@ def dedupe_key(source: str, issuer: str, amount: float, merchant: str, ts: str) 
     """Misma transacción notificada por Wallet y por SMS en la misma ventana de 2 min colapsa en una."""
     bucket = ts[:15]  # YYYY-MM-DDTHH:M (≈10 min)
     return hashlib.sha256(f"{issuer}|{amount:.2f}|{merchant.lower()}|{bucket}".encode()).hexdigest()
+
+
+SCHEMA += """
+CREATE TABLE IF NOT EXISTS plan (
+    month TEXT PRIMARY KEY,
+    gross REAL NOT NULL,
+    health_pct REAL NOT NULL,
+    pension_pct REAL NOT NULL,
+    net REAL NOT NULL,
+    needs_pct REAL NOT NULL,
+    wants_pct REAL NOT NULL,
+    savings_pct REAL NOT NULL
+);
+CREATE TABLE IF NOT EXISTS category_bucket (
+    category TEXT PRIMARY KEY,
+    bucket TEXT NOT NULL
+);
+"""
