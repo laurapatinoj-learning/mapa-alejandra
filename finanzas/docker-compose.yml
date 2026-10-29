@@ -1,0 +1,21 @@
+# VPS con Docker: la app + Caddy (HTTPS automático con Let's Encrypt)
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      FINANZAS_DB: /data/finanzas.db
+    volumes:
+      - finanzas-data:/data
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on: [app]
+volumes:
+  finanzas-data:
+  caddy-data:

@@ -72,6 +72,25 @@ curl https://TU_NOMBRE.fly.dev/health
 Alternativa: un VPS de US$5 (Hetzner/DigitalOcean) con `docker run` + Caddy para HTTPS.
 Tus datos financieros viven en ese volumen: no compartas la API key ni el dominio.
 
+## Empezar de cero desde hoy
+La base de datos nace **vacía** (no hay datos de ejemplo en el repositorio) y registra solo lo que llegue a partir de que actives los Atajos. Crea el plan del mes en curso y el siguiente:
+```bash
+for m in 2026-10 2026-11; do
+  curl -X PUT https://TU_DOMINIO/plan -H "X-API-Key: $API_KEY" -H "Content-Type: application/json" \
+    -d "{\"month\":\"$m\",\"gross_salary\":3516000}"
+done
+```
+Ojo: en el mes de arranque el plan cuenta solo lo registrado desde el primer día de uso.
+
+## Alternativas a Fly.io
+| Opción | Dificultad | Costo aprox.* | Notas |
+|---|---|---|---|
+| **Railway** (despliegue desde GitHub, con volumen) | Baja, sin terminal | ~US$5/mes | Conectas el repositorio, carpeta raíz `finanzas`, agregas un *Volume* en `/data` y las variables de `.env.example`. Da dominio HTTPS. |
+| **Render** (Web Service + Disk) | Baja | ~US$7+/mes | El disco persistente exige plan de pago; sin disco la base se borra en cada despliegue. |
+| **VPS** (Hetzner, DigitalOcean, Contabo) con `docker-compose.yml` | Media | ~US$4–6/mes | Más control. Edita `Caddyfile` con tu dominio y ejecuta `docker compose up -d`. |
+| **En casa** (Raspberry Pi o PC siempre encendido) + Cloudflare Tunnel | Media-alta | ~US$0 | Datos solo en tu casa, pero si se apaga o se cae el internet pierdes capturas. |
+\*Precios orientativos: verifícalos antes de contratar. Evita planes gratuitos que "duermen" o no guardan disco: el webhook debe responder siempre y la base de datos debe persistir.
+
 ## Reglas de alerta
 - **Sin presupuesto**: si no hay plan 50/30/20 ni tope de categoría para ese mes, la compra dispara "no se está considerando el presupuesto".
 - **Plan 50/30/20**: aviso al 80 % y 100 % de Necesidades y de Deseos, y aviso cuando el gasto total ya compromete tu 20 % de ahorro (90 % y 100 %).

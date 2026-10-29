@@ -1,0 +1,4 @@
+# Reemplaza por tu dominio (o subdominio) apuntando a la IP del servidor
+finanzas.TU-DOMINIO.com {
+	reverse_proxy app:8000
+}
