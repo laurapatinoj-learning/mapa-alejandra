@@ -63,7 +63,7 @@ def test_plan_50_30_20_and_alerts(client):
     assert any("Deseos" in a and "superaste" in a for a in r["alerts"])
     assert not any("Sin presupuesto" in a for a in r["alerts"])
     rep = client.get("/reports/daily", headers=H).json()
-    assert "Plan" in rep["text"] and rep["plan"]["savings"]["on_track"] is False
+    assert "Plan" in rep["text"] and rep["plan"]["savings"]["on_track"] is True
 
     # Reclasificar la categoría a Necesidades
     client.put("/categories/Hogar y compras/bucket", headers=H, json={"bucket": "Necesidades"})
@@ -78,3 +78,13 @@ def test_plan_must_sum_100(client):
 def test_transfer_not_counted(client):
     client.post("/webhook/message", headers=H, json={"text": "Su DaviPlata fue cargado desde una cuenta Davivienda con $100,000."})
     assert client.get("/reports/daily", headers=H).json()["total_spent"] == 0
+
+
+def test_savings_goal_alert(client):
+    month = __import__("datetime").date.today().strftime("%Y-%m")
+    client.put("/plan", headers=H, json={"month": month, "gross_salary": 3516000})
+    # Gasto que deja el ahorro por debajo de la meta (neto 3.234.720 - 2.600.000 = 634.720 < 646.944)
+    r = client.post("/webhook/message", headers=H, json={
+        "text": "DAVIVIENDA: Compra . Aprobado(a), $2,600,000, Tarjeta   *3256, Hora 10:00,Lugar JUMBO"}).json()
+    assert any("meta de ahorro" in a for a in r["alerts"])
+    assert client.get("/reports/daily", headers=H).json()["plan"]["savings"]["on_track"] is False
