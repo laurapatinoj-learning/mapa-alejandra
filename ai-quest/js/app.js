@@ -28,12 +28,36 @@
     const top = document.getElementById('top'); top.innerHTML = '';
     const nav = h('nav', { id: 'nav', 'aria-label': 'Navegación principal' }, NAV.map(([k, t]) => h('a', { href: '#/' + k, 'data-k': k }, t)));
     top.append(h('div', { class: 'bar' }, h('a', { class: 'logo', href: '#/dashboard' }, '◆ AI QUEST'), nav,
-      h('div', { class: 'hstats' }, h('span', { class: 'pill', title: 'Experiencia' }, '⚡ ', h('span', { id: 'hud-xp' }, S().xp)), h('span', { class: 'pill hide-s', title: 'Racha de aprendizaje' }, '🔥 ', h('span', { id: 'hud-st' }, store.streakNow())),
+      h('div', { class: 'hstats' }, xpBar(), h('span', { class: 'pill hide-s', title: 'Racha de aprendizaje' }, '🔥 ', h('span', { id: 'hud-st' }, store.streakNow())),
         h('button', { class: 'btn sm icon', id: 'hud-mute', type: 'button', 'aria-label': 'Silenciar o activar audio', onclick: () => { const m = !S().settings.muted; A.audio.setMuted(m); A.guide.syncHud(); } }, S().settings.muted ? '🔇' : '🔊'),
         h('button', { class: 'btn sm icon', type: 'button', 'aria-label': 'Accesibilidad y audio', onclick: openSettings }, '⚙'),
         h('button', { class: 'btn sm icon menu-btn', type: 'button', 'aria-label': 'Menú', 'aria-expanded': 'false', onclick: (e) => { const o = nav.classList.toggle('open'); e.currentTarget.setAttribute('aria-expanded', o); } }, '☰'))));
   }
-  const hud = () => { const a = document.getElementById('hud-xp'), b = document.getElementById('hud-st'); a && (a.textContent = S().xp); b && (b.textContent = store.streakNow()); };
+  function xpBar() { const bar = A.ui.bar(0); bar.id = 'hud-bar'; return h('div', { class: 'xpbar', title: 'Experiencia y nivel de jugador' }, h('div', { class: 't' }, h('span', { id: 'hud-lv' }, 'Nv ' + store.playerLevel()), h('span', null, '⚡ ', h('span', { id: 'hud-xp' }, S().xp))), bar); }
+  const hud = () => { const a = document.getElementById('hud-xp'), b = document.getElementById('hud-st'), l = document.getElementById('hud-lv'), i = document.querySelector('#hud-bar i'); a && (a.textContent = S().xp); b && (b.textContent = store.streakNow()); l && (l.textContent = 'Nv ' + store.playerLevel()); i && (i.style.width = (S().xp % 300) / 3 + '%'); };
+  const starStr = (n) => '★'.repeat(n || 0) + '☆'.repeat(3 - (n || 0));
+  const plain = (html) => { const d = document.createElement('div'); d.innerHTML = html; return d.textContent.replace(/\s+/g, ' ').trim(); };
+  function brief(html, max) {
+    max = max || 130; const txt = plain(html); if (txt.length <= max) return h('div', { class: 'callout', html });
+    const el = h('div', { class: 'callout brief' }), span = h('span', null, txt.slice(0, max).replace(/\s+\S*$/, '') + '…'), btn = h('button', { class: 'btn sm', type: 'button', onclick: () => { span.innerHTML = html; btn.remove(); } }, 'Ver todo');
+    el.append(span, btn); return el;
+  }
+  const ICONS = [[/alucin|riesgo|segur|permis|privilegio|guardrail|responsable/i, '🛡️'], [/resource/i, '📄'], [/tool|herramient/i, '🛠️'], [/prompt/i, '✍️'], [/json|api|endpoint|http|método/i, '🔌'], [/agente/i, '🤖'], [/imagen/i, '🖼️'], [/audio|voz/i, '🔊'], [/video/i, '🎬'], [/document/i, '📑'], [/workflow|flujo|trigger/i, '🔀'], [/memoria/i, '🧠'], [/mcp|protocolo/i, '🛰️'], [/token|contexto/i, '🔤']], CYC = ['💡', '🧩', '🔎', '🚀', '🎯', '🧠', '⚙️', '✨', '🧭'];
+  const iconFor = (t, i) => { for (const [re, ic] of ICONS) if (re.test(t)) return ic; return CYC[i % CYC.length]; };
+  function conceptDeck(lv, L, drawNav) {
+    const cards = lv.concept, seen = new Set([0]); let idx = 0; const box = h('div', { class: 'deck' }), dots = h('div', { class: 'dots' }), nav = h('div', { class: 'deck-nav' });
+    function draw() {
+      const c = cards[idx], d = document.createElement('div'); d.innerHTML = c.p; const kids = [...d.children], key = kids.length ? kids[0].outerHTML : c.p, rest = kids.slice(1).map((k) => k.outerHTML).join('');
+      box.innerHTML = ''; box.append(h('div', { class: 'slide' }, h('div', { class: 'si' }, iconFor(c.h, idx)), h('h2', null, c.h.replace(/^[\d–\-. ]+(?=\S)/, '')), h('div', { class: 'key', html: key }), rest ? h('details', { class: 'more' }, h('summary', null, 'Profundizar'), h('div', { html: rest })) : null,
+        h('div', { class: 'row' }, h('button', { class: 'btn sm', type: 'button', onclick: () => say(plain(key) + '', { expr: 'explain', anim: 'explain' }) }, '🔊 Escuchar a Nova'))));
+      dots.innerHTML = ''; cards.forEach((_, i) => dots.append(h('i', { class: i === idx ? 'on' : seen.has(i) ? 'seen' : '' })));
+      nav.innerHTML = ''; nav.append(h('button', { class: 'btn', type: 'button', disabled: idx === 0, onclick: () => go(-1) }, '← Anterior'), h('span', { class: 'muted small' }, `Idea ${idx + 1} de ${cards.length}`), h('button', { class: 'btn pri', type: 'button', disabled: idx === cards.length - 1, onclick: () => go(1) }, 'Siguiente idea →'));
+      if (seen.size === cards.length && !L.seen.concept) { L.seen.concept = true; store.save(); drawNav(); sfx('unlock'); toast('✅ Conceptos completados', 'ok'); }
+    }
+    function go(d) { idx = Math.max(0, Math.min(cards.length - 1, idx + d)); seen.add(idx); sfx('click'); draw(); }
+    const w = h('div', { class: 'card' }, h('div', { class: 'row' }, h('h2', { style: 'margin:0' }, 'Conceptos clave'), h('span', { class: 'sp' }), h('span', { class: 'chip' }, '1 idea a la vez')), box, dots, nav);
+    draw(); return w;
+  }
 
   /* ---------- router ---------- */
   function go(hash) { if (location.hash === hash) route(); else location.hash = hash; }
@@ -94,6 +118,7 @@
     return [
       { icon: '📚', t: 'Aprende hoy', d: 'Completa una actividad para mantener tu racha.', done: s.streak.last === t, cta: 'Ir a mi nivel', go: () => go(nt ? `#/level/${nt.n}/${nt.step}` : '#/map') },
       { icon: '⚡', t: 'Desafío sorpresa', d: 'Pregunta rápida con XP extra (máx. 3 al día).', done: s.stats.surpriseDay === t && s.stats.surpriseToday >= 3, cta: 'Aceptar desafío', go: surprise },
+      { icon: '🎁', t: 'Cofre diario', d: 'Una recompensa de XP cada día.', done: s.stats.chestDay === t, cta: 'Abrir cofre', go: openChest },
       { icon: '🧪', t: 'Experimenta en el laboratorio', d: 'Guarda una versión de prompt en la bitácora.', done: s.labLog.some((l) => new Date(l.ts).toDateString() === new Date().toDateString()), cta: 'Abrir laboratorio', go: () => go('#/lab') },
     ];
   }
@@ -104,7 +129,7 @@
     const cur = nextTask(), m = h('div', { class: 'map' });
     LV().forEach((n) => { const lv = A.levels[n], L = store.level(n), un = store.unlocked(n), cl = 'node' + (L.done ? ' done' : '') + (!un ? ' locked' : '') + (cur && cur.n === n ? ' cur' : '');
       m.append(h('button', { class: cl, type: 'button', 'aria-disabled': !un, 'aria-label': `Nivel ${n}: ${lv.name}. ${L.done ? 'Superado' : un ? 'Disponible' : 'Bloqueado'}`, onclick: () => { if (!un) { sfx('warn'); toast('Supera el nivel anterior (≥80%) para desbloquear este.', 'warn'); return; } go('#/level/' + n); } },
-        h('span', { class: 'n' }, 'NIVEL ' + n), h('span', { class: 'ico' }, L.done ? '✅' : un ? lv.icon : '🔒'), h('b', null, lv.name), h('span', { class: 'muted small' }, lv.subtitle), h('span', { class: 'sp' }), h('span', { class: 'chip' + (L.done ? ' green' : '') }, lv.bloom), L.mastery.best ? h('span', { class: 'small muted' }, 'Mejor evaluación: ' + L.mastery.best + '%') : null)); });
+        h('span', { class: 'n' }, 'NIVEL ' + n), h('span', { class: 'ico' }, L.done ? '✅' : un ? lv.icon : '🔒'), h('b', null, lv.name), h('span', { class: 'muted small' }, lv.subtitle), h('span', { class: 'sp' }), un ? h('span', { class: 'stars' }, '★ ' + store.levelStars(n).got + '/' + store.levelStars(n).max) : null, h('span', { class: 'chip' + (L.done ? ' green' : '') }, lv.bloom), L.mastery.best ? h('span', { class: 'small muted' }, 'Mejor evaluación: ' + L.mastery.best + '%') : null)); });
     V.append(m);
   }
 
@@ -166,6 +191,18 @@
     say('certificate', { expr: 'happy', anim: 'celebrate', speak: false });
   }
 
+  function openChest() {
+    const s = S(), t = A.util.today(); if (s.stats.chestDay === t) { toast('Ya abriste tu cofre de hoy. ¡Vuelve mañana!'); return; }
+    const prize = A.util.pick([25, 30, 40, 50, 75]), chest = h('button', { class: 'chest', type: 'button', 'aria-label': 'Abrir cofre' }, '🎁');
+    sfx('unlock'); say('chest', { expr: 'surprise', anim: 'surprise' });
+    const m = modal('🎁 Cofre diario', h('div', { style: 'text-align:center' }, chest, h('p', { class: 'muted' }, 'Toca el cofre para abrirlo')), { noClose: true, locked: true });
+    chest.addEventListener('click', () => { chest.textContent = '✨'; chest.classList.add('open'); s.stats.chestDay = t; store.addXP(prize); store.save(); sfx('badge'); confetti(); m.box.querySelector('p').innerHTML = `<b style="font-size:1.6rem">+${prize} XP</b>`; chest.replaceWith(h('div', { style: 'font-size:3rem' }, '🎉')); m.box.append(h('button', { class: 'btn pri', type: 'button', style: 'margin-top:12px', onclick: () => { m.close(); route(); } }, 'Genial')); }, { once: true });
+  }
+  function levelUp(n) {
+    sfx('levelup'); confetti(); const rk = ['Novato', 'Explorador', 'Aprendiz', 'Constructor', 'Ingeniero', 'Maestro', 'Arquitecto', 'Leyenda'][Math.min(7, n - 1)];
+    toast(`🆙 ¡Subes al nivel de jugador ${n}! — ${rk}`, 'ok'); say('level_up', { expr: 'happy', anim: 'celebrate', speak: false }); hud();
+  }
+
   /* ---------- desafío sorpresa ---------- */
   function surprise() {
     const s = S(), t = A.util.today(); if (s.stats.surpriseDay !== t) { s.stats.surpriseDay = t; s.stats.surpriseToday = 0; }
@@ -189,45 +226,45 @@
     if (cur.kind === 'text' && cur.id !== 'concept') { L.seen[cur.id] = true; store.save(); }
     const stepper = h('div', { class: 'stepper', role: 'navigation', 'aria-label': 'Pasos del nivel' }), bar = h('div', { class: 'stepbar' }), main = h('div');
     const drawNav = () => {
-      stepper.innerHTML = ''; steps.forEach((s, i) => stepper.append(h('button', { class: 'st' + (i === idx ? ' cur' : '') + (done(s) ? ' done' : ''), type: 'button', disabled: !reach(i), 'aria-current': i === idx ? 'step' : null, onclick: () => go(`#/level/${n}/${s.id}`) }, h('span', { class: 'dot' }, done(s) ? '✓' : i + 1), s.label)));
+      stepper.innerHTML = ''; steps.forEach((s, i) => stepper.append(h('button', { class: 'st' + (i === idx ? ' cur' : '') + (done(s) ? ' done' : ''), type: 'button', disabled: !reach(i), 'aria-current': i === idx ? 'step' : null, onclick: () => go(`#/level/${n}/${s.id}`) }, h('span', { class: 'dot' }, done(s) ? '✓' : i + 1), s.label, s.kind === 'act' && done(s) ? h('span', { class: 'stars' }, starStr((L.acts[s.act.id] || {}).stars)) : null)));
       bar.innerHTML = ''; const prev = steps[idx - 1], next = steps[idx + 1], ok = done(cur);
       bar.append(prev ? h('button', { class: 'btn', type: 'button', onclick: () => go(`#/level/${n}/${prev.id}`) }, '← Anterior') : h('span'), h('span', { class: 'muted small' }, `Nivel ${n} · Paso ${idx + 1} de ${steps.length}` + (ok ? '' : ' · ' + req(cur))),
         next ? h('button', { class: 'btn pri', type: 'button', disabled: !ok, onclick: () => { sfx('transition'); go(`#/level/${n}/${next.id}`); } }, 'Siguiente →') : (L.done && n < 10 ? h('button', { class: 'btn pri', type: 'button', onclick: () => go('#/level/' + (n + 1)) }, `Ir al Nivel ${n + 1} →`) : L.done ? h('button', { class: 'btn pri', type: 'button', onclick: () => go('#/certificate') }, 'Ver certificado →') : h('span')));
     };
-    const req = (s) => s.kind === 'act' ? `Para continuar: alcanza ≥ ${s.act.pass || 80}%` : s.kind === 'mastery' ? 'Para continuar: obtén ≥ 80%' : s.id === 'concept' ? 'Para continuar: abre todas las tarjetas' : '';
+    const req = (s) => s.kind === 'act' ? `Para continuar: alcanza ≥ ${s.act.pass || 80}%` : s.kind === 'mastery' ? 'Para continuar: obtén ≥ 80%' : s.id === 'concept' ? 'Para continuar: recorre todas las ideas' : '';
     const crumb = h('div', { class: 'row', style: 'margin-bottom:10px' }, h('span', { class: 'chip violet' }, `Nivel ${n} · ${lv.bloom}`), h('b', null, lv.name), h('span', { class: 'sp' }), h('div', { style: 'width:180px' }, A.ui.bar(Math.round(steps.filter(done).length / steps.length * 100))));
     V.append(h('div', { class: 'lvl' }, stepper, h('div', null, crumb, main, bar)));
 
     /* contenido del paso */
     if (cur.id === 'intro') {
-      main.append(h('div', { class: 'card' }, h('h1', null, lv.icon + ' ' + lv.name), h('p', { class: 'muted', style: 'font-size:1.05rem' }, lv.narrative),
-        h('div', { class: 'callout', html: '<b>🎯 Objetivo de aprendizaje (medible):</b> ' + lv.objective }),
-        h('div', { class: 'where' }, h('div', null, h('b', null, 'Dónde estás'), `Nivel ${n} de 10 — ${lv.name}`), h('div', null, h('b', null, 'Qué aprenderás'), lv.subtitle), h('div', null, h('b', null, 'Qué harás'), `${lv.practice.length} práctica(s) interactiva(s), 1 reto aplicado y la evaluación de dominio.`), h('div', null, h('b', null, 'Para desbloquear el siguiente'), '≥ 80% en la evaluación de dominio, tras completar práctica y reto.'))));
+      main.append(h('div', { class: 'card' }, h('div', { class: 'big-ico' }, lv.icon), h('h1', null, lv.name), h('p', { class: 'lead' }, lv.narrative.split('. ')[0].replace(/\.$/, '') + '.'),
+        h('div', { class: 'mission' }, h('span', { class: 'mi' }, '🎯'), h('div', null, h('div', { class: 'muted small' }, 'TU MISIÓN'), lv.mission)),
+        h('div', { class: 'chips' }, h('span', { class: 'chip' }, '⏱ ~' + lv.mins + ' min'), h('span', { class: 'chip violet' }, '🎮 ' + (lv.practice.length + 1) + ' retos'), h('span', { class: 'chip amber' }, '🏅 ' + lv.badge.name), h('span', { class: 'chip red' }, '👾 Jefe: ' + lv.boss.name)),
+        h('details', { class: 'more' }, h('summary', null, 'Ver objetivo completo'), h('div', { class: 'callout', html: '<b>🎯 Objetivo medible:</b> ' + lv.objective }), h('p', { class: 'muted small' }, 'Para desbloquear el siguiente nivel: ≥ 80% en la evaluación de dominio, tras completar práctica y reto.'))));
       say(lv.voice.intro, { expr: 'explain', anim: 'welcome', key: `lvl${n}_intro` });
       A.guide.hintFn = () => say('Empieza leyendo el objetivo. Cada paso se desbloquea cuando demuestras lo aprendido en el anterior.', { expr: 'explain' });
     } else if (cur.id === 'concept') {
-      const open = new Set(), cnt = h('p', { class: 'muted small' });
-      const upd = () => { cnt.textContent = `Tarjetas abiertas: ${open.size}/${lv.concept.length}`; if (open.size === lv.concept.length && !L.seen.concept) { L.seen.concept = true; store.save(); drawNav(); sfx('unlock'); } };
-      main.append(h('div', { class: 'card' }, h('h2', null, 'Conceptos clave'), h('p', { class: 'muted' }, 'Abre cada tarjeta. Está pensado para leer poco y practicar mucho.'), cnt, lv.concept.map((c, i) => { const body = h('div', { class: 'body', html: c.p, hidden: true }), tk = h('span', { class: 'tk' }); const a = h('div', { class: 'acc' }, h('button', { type: 'button', 'aria-expanded': 'false', onclick: () => { const o = a.classList.toggle('open'); body.hidden = !o; a.firstChild.setAttribute('aria-expanded', o); if (o) { open.add(i); tk.textContent = '✓'; sfx('click'); upd(); } } }, h('span', null, (i + 1) + '.'), c.h, tk), body); return a; })));
-      upd();
-      say('Lee con calma. Cuando abras todas las tarjetas se desbloquea el ejemplo.', { expr: 'explain', speak: false });
+      main.append(conceptDeck(lv, L, drawNav));
+      say('Una idea a la vez. Al verlas todas se desbloquea el ejemplo.', { expr: 'explain', speak: false });
     } else if (cur.id === 'example') {
       main.append(h('div', { class: 'card' }, h('h2', null, 'Ejemplo práctico: ' + lv.example.title), h('div', { html: lv.example.html })));
       say('Observa el ejemplo: es el modelo de lo que vas a practicar.', { expr: 'explain', speak: false });
     } else if (cur.kind === 'act') {
       const a = cur.act, rec = store.act(n, a.id), pass = a.pass || 80; let hinted = false;
-      const status = h('span', { class: 'chip ' + (rec.done ? 'green' : '') }, rec.done ? '✓ Completada · mejor ' + rec.score + '%' : 'Pendiente');
+      const status = h('span', { class: 'chip ' + (rec.done ? 'green' : '') }, rec.done ? '✓ ' + starStr(rec.stars) + ' · ' + rec.score + '%' : 'Pendiente');
       const ctx = { pass, report(score, meta) {
         score = Math.max(0, Math.min(100, Math.round(score))); rec.attempts++; rec.score = Math.max(rec.score, score);
         const xpMax = Math.round(a.xp * (hinted ? .9 : 1) * rec.score / 100), d = xpMax - rec.xp;
         if (d > 0) { rec.xp = xpMax; store.addXP(d); xpFloat(d, status); }
+        rec.stars = Math.max(rec.stars || 0, store.stars(score, pass, hinted));
+        if (rec.attempts === 1 && score === 100 && !rec.bonus) { rec.bonus = Math.round(a.xp * 0.2); store.addXP(rec.bonus); toast('✨ Sin fallos a la primera: +' + rec.bonus + ' XP', 'ok'); }
         const first = !rec.done && score >= pass; if (first) { rec.done = true; store.markStudy(); store.grant('first', 'Primer paso', '🚀'); if (store.streakNow() >= 3) store.grant('streak3', 'Constancia', '🔥'); if (a.id === 'l1-hot' && score === 100) store.grant('hallu', 'Cazador de alucinaciones', '🔍'); }
-        store.save(); status.className = 'chip ' + (rec.done ? 'green' : ''); status.textContent = rec.done ? '✓ Completada · mejor ' + rec.score + '%' : 'Intentos: ' + rec.attempts + ' · mejor ' + rec.score + '%';
+        store.save(); status.className = 'chip ' + (rec.done ? 'green' : ''); status.textContent = rec.done ? '✓ ' + starStr(rec.stars) + ' · ' + rec.score + '%' : 'Intentos: ' + rec.attempts + ' · mejor ' + rec.score + '%'; if (rec.stars === 3 && first) confetti();
         A.guide.react(score >= pass); if (first) { sfx('unlock'); toast('Actividad completada: +' + rec.xp + ' XP', 'ok'); } hud(); drawNav();
       } };
       A.guide.hintFn = () => { hinted = true; L.hints++; store.save(); say(a.hint || 'Lee la consigna con calma e intenta una primera respuesta; la retroalimentación te orientará.', { expr: 'think', anim: 'explain' }); };
-      main.append(h('div', { class: 'card' }, h('div', { class: 'row', style: 'margin-bottom:8px' }, h('span', { class: 'chip ' + (cur.ch ? 'amber' : '') }, cur.ch ? '🎯 Reto aplicado' : '🧩 Práctica'), h('span', { class: 'chip violet' }, a.type === 'mcq' ? 'Quiz' : 'Interactivo'), h('span', { class: 'chip amber' }, '+' + a.xp + ' XP máx.'), status, h('span', { class: 'sp' }), h('button', { class: 'btn sm', type: 'button', onclick: () => A.guide.help() }, '💡 Pedir ayuda a Nova')),
-        h('h2', null, a.title), h('div', { class: 'callout', html: '<b>Qué debes hacer:</b> ' + a.goal }), A.act[a.type](a, ctx)));
+      main.append(h('div', { class: 'card' }, h('div', { class: 'row', style: 'margin-bottom:8px' }, h('span', { class: 'chip ' + (cur.ch ? 'amber' : '') }, cur.ch ? '🎯 Reto aplicado' : '🧩 Práctica'), h('span', { class: 'chip violet' }, ({ mcq: 'Quiz', memory: '🃏 Memoria', truefalse: '⚡ V o F', fillblank: '✏️ Completar', branch: '🎭 Historia', classify: '🗂 Clasificar', order: '🔢 Ordenar', match: '🔗 Emparejar', flashcards: '📇 Tarjetas', slider: '🎚 Calibrar', hotspot: '🔍 Detectar', explorer: '🧭 Explorar', diagram: '🗺 Diagrama', pipeline: '🔀 Construir', designer: '🛠 Diseñar', apisim: '🔌 Simulador', jsonexplorer: '{ } JSON', mcpsim: '🛰 Simulador MCP' })[a.type] || 'Interactivo'), h('span', { class: 'chip amber' }, '+' + a.xp + ' XP máx.'), status, h('span', { class: 'sp' }), h('button', { class: 'btn sm', type: 'button', onclick: () => A.guide.help() }, '💡 Pedir ayuda a Nova')),
+        h('h2', null, a.title), brief('<b>Qué debes hacer:</b> ' + a.goal), A.act[a.type](a, ctx)));
       say(cur.ch ? lv.voice.challenge : a.say || 'Adelante: lee la consigna y practica. Cuando necesites una pista, tócame.', { expr: 'explain', key: cur.ch ? `lvl${n}_challenge` : undefined, speak: !!cur.ch });
     } else if (cur.kind === 'mastery') {
       main.append(masteryCard(n, lv, L, drawNav));
@@ -239,10 +276,10 @@
 
   function masteryCard(n, lv, L, drawNav) {
     const box = h('div', { class: 'card' }), start = () => {
-      box.innerHTML = ''; box.append(h('span', { class: 'chip red' }, 'Evaluación sumativa · umbral 80%'), h('h2', { style: 'margin-top:8px' }, 'Evaluación de dominio — ' + lv.name),
-        A.act.mcq({ questions: lv.mastery }, { pass: 80, report: (sc) => { L.mastery.attempts++; L.mastery.best = Math.max(L.mastery.best, sc); store.save(); if (sc >= 80) finish(n, lv, L, sc); drawNav(); if (sc >= 80 && n < 10) { box.append(h('button', { class: 'btn pri', type: 'button', style: 'margin-top:12px', onclick: () => go('#/level/' + (n + 1)) }, `Ir al Nivel ${n + 1} →`)); } else if (sc >= 80 && n === 10) box.append(h('button', { class: 'btn pri', type: 'button', style: 'margin-top:12px', onclick: () => go('#/certificate') }, 'Ver mi certificado →')); } }));
+      box.innerHTML = ''; box.append(h('span', { class: 'chip red' }, 'Evaluación sumativa · umbral 80%'), h('h2', { style: 'margin-top:8px' }, 'Evaluación de dominio'),
+        A.act.mcq({ questions: lv.mastery, boss: lv.boss }, { pass: 80, report: (sc) => { L.mastery.attempts++; L.mastery.best = Math.max(L.mastery.best, sc); L.mastery.stars = Math.max(L.mastery.stars || 0, store.stars(sc, 80, false)); store.save(); if (sc >= 80) finish(n, lv, L, sc); drawNav(); if (sc >= 80 && n < 10) { box.append(h('button', { class: 'btn pri', type: 'button', style: 'margin-top:12px', onclick: () => go('#/level/' + (n + 1)) }, `Ir al Nivel ${n + 1} →`)); } else if (sc >= 80 && n === 10) box.append(h('button', { class: 'btn pri', type: 'button', style: 'margin-top:12px', onclick: () => go('#/certificate') }, 'Ver mi certificado →')); } }));
     };
-    box.append(h('span', { class: 'chip red' }, 'Evaluación sumativa'), h('h2', { style: 'margin-top:8px' }, 'Evaluación de dominio'), h('p', { class: 'muted' }, `${lv.mastery.length} preguntas aplicadas. Necesitas 80% o más. Si no lo logras, recibes retroalimentación específica y puedes reintentar (las preguntas y opciones se barajan).`),
+    box.append(h('div', { class: 'boss' }, h('span', { class: 'boss-e' }, lv.boss.emoji), h('div', { class: 'sp' }, h('b', null, 'Jefe del nivel: ' + lv.boss.name), h('div', { class: 'muted small' }, `${lv.mastery.length} preguntas · tienes pocas vidas · necesitas 80% para vencerlo`))),
       L.mastery.best ? h('p', null, 'Tu mejor resultado: ', h('b', null, L.mastery.best + '%')) : null, h('button', { class: 'btn pri', type: 'button', onclick: start }, L.done ? 'Repetir evaluación' : 'Comenzar evaluación'));
     return box;
   }
@@ -264,5 +301,5 @@
     window.addEventListener('error', (e) => toast('Error inesperado: ' + e.message, 'bad'));
     route();
   });
-  A.app = { go, surprise };
+  A.app = { go, surprise, levelUp };
 })();

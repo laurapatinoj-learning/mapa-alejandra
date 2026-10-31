@@ -18,7 +18,7 @@ También funciona abriendo `index.html` directamente (no usa módulos ES ni peti
 | Personaje guía **Nova** (original, inspirada en la imagen de referencia), 6 expresiones y 6 animaciones | `js/core/character.js` |
 | Voz + efectos con controles (pausar, repetir, silenciar, volumen), subtítulos | `js/core/audio.js`, `js/core/voice.js` |
 | 10 niveles (Bloom revisada), cada uno con objetivo medible, narrativa, conceptos, ejemplo, prácticas, reto y evaluación ≥ 80 % | `js/levels/level01…10.js` |
-| 15 tipos de actividad (quiz, clasificar, emparejar, ordenar, flashcards, sliders, escenarios ramificados, hotspots, explorador, diagramas, constructor de flujos, diseñador con rúbrica, simulador API, explorador JSON, **simulador MCP**) | `js/activities/*.js` |
+| **18 tipos de actividad** (v2: memoria, verdadero/falso con vidas y combo, completar espacios; evaluación como **jefe de nivel**) y 15 previos (quiz, clasificar, emparejar, ordenar, flashcards, sliders, escenarios ramificados, hotspots, explorador, diagramas, constructor de flujos, diseñador con rúbrica, simulador API, explorador JSON, **simulador MCP**) | `js/activities/*.js` |
 | Laboratorio de prompts (analizador A/B, bitácora, parámetros, conexión opcional a un modelo real) | `js/lab.js` |
 | Gamificación: XP, rachas, insignias, logros, desafíos sorpresa, certificado PNG | `js/app.js`, `js/core/store.js` |
 | Diagnóstico + evaluación formativa + sumativa + rúbrica final (20/25/25/15/15) | `js/levels/extra.js`, `level10.js` |

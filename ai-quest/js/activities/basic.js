@@ -8,14 +8,17 @@
   /* ---------- Selección múltiple / respuesta múltiple (con retroalimentación por pregunta) ---------- */
   A.act.mcq = function (cfg, ctx) {
     const root = h('div', { class: 'act mcq' }), qs = cfg.questions;
-    let i = 0, right = 0, order = [];
-    const start = () => { i = 0; right = 0; order = cfg.keepOrder ? qs.slice() : shuffle(qs); render(); };
+    let i = 0, right = 0, wrong = 0, order = [];
+    const boss = cfg.boss, hearts = () => order.length - Math.ceil(0.8 * order.length) + 1;
+    const start = () => { i = 0; right = 0; wrong = 0; order = cfg.keepOrder ? qs.slice() : shuffle(qs); render(); };
+    const bossBar = () => h('div', { class: 'boss' }, h('span', { class: 'boss-e' }, boss.emoji), h('div', { class: 'sp' }, h('b', null, boss.name), h('div', { class: 'bartrack hp' }, h('i', { style: 'width:' + Math.max(0, 100 - Math.round(right / order.length * 100)) + '%' }))), h('span', { class: 'hearts', 'aria-label': (hearts() - wrong) + ' vidas' }, '❤️'.repeat(Math.max(0, hearts() - wrong)) + '🖤'.repeat(Math.min(hearts(), wrong))));
     function render() {
       root.innerHTML = '';
-      if (i >= order.length) return summary();
+      if (i >= order.length || (boss && wrong >= hearts())) return summary();
       const q = order[i], ans = q.a !== undefined ? q.a : q.answer, multi = Array.isArray(ans), set = new Set([].concat(ans));
       const opts = shuffle((q.o || q.options).map((t, k) => ({ t, k }))), picked = new Set();
       let locked = false;
+      boss && root.append(bossBar());
       root.append(h('div', { class: 'q-head' }, h('span', { class: 'chip' }, `Pregunta ${i + 1} de ${order.length}`), multi && h('span', { class: 'chip violet' }, 'Marca todas las correctas')));
       root.append(h('h3', { class: 'q-text', html: q.q }));
       const out = h('div'), list = h('div', { class: 'opts', role: multi ? 'group' : 'radiogroup' });
@@ -31,17 +34,18 @@
       function submit() {
         locked = true;
         const ok = picked.size === set.size && [...picked].every((k) => set.has(k));
-        if (ok) right++;
+        if (ok) right++; else wrong++;
         btns.forEach((b) => { const k = +b.dataset.k; b.disabled = true; if (set.has(k)) b.classList.add('ok'); else if (picked.has(k)) b.classList.add('bad'); });
         out.append(fb(ok, (ok ? '<b>¡Correcto!</b> ' : '<b>No exactamente.</b> ') + (q.e || q.explain || '')));
         ok ? sfx('correct') : sfx('wrong');
         go.remove();
-        out.append(h('button', { class: 'btn pri', type: 'button', onclick: () => { i++; sfx('transition'); render(); } }, i + 1 >= order.length ? 'Ver resultado' : 'Siguiente pregunta →'));
+        out.append(h('button', { class: 'btn pri', type: 'button', onclick: () => { i++; sfx('transition'); render(); } }, (i + 1 >= order.length || (boss && wrong >= hearts())) ? 'Ver resultado' : 'Siguiente pregunta →'));
       }
       root.append(list, multi ? go : null, out);
     }
     function summary() {
       const score = Math.round((right / order.length) * 100), pass = ctx.pass;
+      boss && root.append(bossBar(), h('h2', null, score >= pass ? '🏆 ¡Jefe derrotado!' : '💥 ' + boss.name + ' resiste esta ronda'));
       root.append(h('h3', null, `Resultado: ${right} de ${order.length} (${score}%)`), A.ui.bar(score),
         cfg.diagnostic ? fb(null, 'Diagnóstico registrado. No tiene nota: es tu punto de partida para medir cuánto avanzas.')
           : fb(score >= pass, score >= pass ? `Superaste el umbral de dominio (${pass}%).` : `Necesitas ${pass}% para continuar. Repasa las explicaciones y reintenta: las preguntas se barajan cada vez.`));

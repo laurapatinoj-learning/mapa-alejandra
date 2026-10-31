@@ -4,6 +4,7 @@ const fs = require('fs'), path = require('path');
 const A = require('../js/core/util.js'); require('../js/core/voice.js'); require('../js/levels/extra.js');
 A.prompt = { analyze: () => ({ score: 0 }) };
 for (let i = 1; i <= 10; i++) require(`../js/levels/level${String(i).padStart(2, '0')}.js`);
+require('../js/levels/more.js');
 const rows = [];
 const group = (g, id, text) => rows.push({ group: g, id, text });
 Object.entries(A.voice).forEach(([k, t]) => group(k.startsWith('correct') ? 'Retroalimentación: respuesta correcta' : k.startsWith('wrong') ? 'Retroalimentación: respuesta incorrecta' : k.startsWith('motivation') ? 'Mensajes motivacionales' : k.startsWith('warning') ? 'Alertas y advertencias' : 'Generales', k, t));

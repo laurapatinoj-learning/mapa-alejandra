@@ -1,5 +1,15 @@
 # Audio de AI QUEST
 
+## Intento con ElevenLabs (31-oct-2026)
+
+Se eligió la voz **Andrea – Clear, Warm & Dynamic** (`attjAvEwtUIAm108to6B`, español latinoamericano). La generación **falló: la cuenta tenía 0 de 10.000 créditos**, por lo que no hay `.mp3` todavía. Los 57 guiones suman ~3.600 caracteres (≈ 3.600 créditos, 1 toma). Cuando se renueve la cuota:
+
+```bash
+ELEVENLABS_API_KEY=xxx node tools/generate-audio.js --dry-run   # ver el costo
+ELEVENLABS_API_KEY=xxx node tools/generate-audio.js             # genera y guarda en assets/audio/
+```
+Luego pon `useAudioFiles: true` en `js/core/audio.js`. (Script no probado: no hubo cuota.)
+
 ## Estado actual (honesto)
 
 | Elemento | Estado |

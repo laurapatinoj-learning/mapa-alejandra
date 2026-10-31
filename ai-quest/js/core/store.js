@@ -7,7 +7,7 @@
     streak: { count: 0, last: null, best: 0 },
     levels: {}, badges: {}, ach: {},
     settings: { muted: false, volume: 0.8, subs: true, motion: true, contrast: false, font: 1, rate: 1 },
-    stats: { labRuns: 0, surprise: 0, surpriseDay: null, surpriseToday: 0, hints: 0 },
+    stats: { chestDay: null, labRuns: 0, surprise: 0, surpriseDay: null, surpriseToday: 0, hints: 0 },
     labLog: [],
   });
   let S;
@@ -32,7 +32,9 @@
       Object.keys(A.levels).forEach((k) => { const lv = A.levels[k]; const L = store.level(k); const acts = lv.practice.concat([lv.challenge]); total += acts.length + 1; done += acts.filter((a) => L.acts[a.id] && L.acts[a.id].done).length + (L.done ? 1 : 0); });
       return total ? Math.round((done / total) * 100) : 0;
     },
-    addXP(n) { S.xp += n; save(); const e = document.getElementById('hud-xp'); if (e) e.textContent = S.xp; },
+    addXP(n) { const b = store.playerLevel(); S.xp += n; save(); const e = document.getElementById('hud-xp'); if (e) e.textContent = S.xp; if (store.playerLevel() > b && A.app && A.app.levelUp) A.app.levelUp(store.playerLevel()); },
+    stars(score, pass, hinted) { return score >= 100 && !hinted ? 3 : score >= 90 ? 2 : score >= pass ? 1 : 0; },
+    levelStars(n) { const lv = A.levels[n], L = store.level(n); const acts = lv.practice.concat([lv.challenge]); return { got: acts.reduce((a, x) => a + ((L.acts[x.id] && L.acts[x.id].stars) || 0), 0) + (L.mastery.stars || 0), max: (acts.length + 1) * 3 }; },
     playerLevel: () => Math.floor(S.xp / 300) + 1,
     markStudy() {
       const t = A.util.today(), s = S.streak;

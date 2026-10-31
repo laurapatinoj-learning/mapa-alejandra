@@ -190,3 +190,36 @@ body.hc .bubble{background:#000}
 .cert-wrap canvas{width:100%;height:auto;border-radius:12px;border:1px solid var(--bd2)}
 .lock-msg{text-align:center;padding:40px 20px}
 @media print{body *{visibility:hidden}.cert-wrap,.cert-wrap *{visibility:visible}.cert-wrap{position:absolute;inset:0}}
+
+/* ===== v2: menos texto, más juego ===== */
+.lead{font-size:1.15rem;color:var(--mu);margin:.2em 0 1em}
+.big-ico{font-size:3.4rem;line-height:1;filter:drop-shadow(0 6px 18px rgba(34,211,238,.4))}
+.mission{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,rgba(34,211,238,.14),rgba(139,92,246,.18));border:1px solid var(--bd2);border-radius:16px;padding:14px 16px;margin:14px 0;font-size:1.1rem;font-weight:700}
+.mission .mi{font-size:1.8rem}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+details.more{margin-top:12px;border:1px solid var(--bd);border-radius:12px;padding:8px 12px;background:var(--s1)}details.more summary{cursor:pointer;font-weight:700;color:var(--mu)}details.more[open] summary{margin-bottom:8px}
+/* deck de conceptos */
+.deck{position:relative;min-height:300px}
+.slide{background:linear-gradient(160deg,var(--s2),var(--s1));border:1px solid var(--bd2);border-radius:22px;padding:26px;min-height:280px;display:flex;flex-direction:column;gap:10px;animation:pop .35s}
+.slide .si{font-size:3rem;line-height:1}.slide h2{font-size:1.5rem;margin:.1em 0}
+.slide .key{font-size:1.2rem;line-height:1.55}.slide .key p{margin:0 0 .5em}.slide .key ul,.slide .key ol{margin:.3em 0;padding-left:1.2em}
+.dots{display:flex;gap:8px;justify-content:center;margin:14px 0}.dots i{width:10px;height:10px;border-radius:50%;background:var(--s3);transition:.2s}.dots i.on{background:var(--cy);transform:scale(1.25)}.dots i.seen{background:var(--gr)}
+.deck-nav{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.brief{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}.brief .btn{padding:2px 10px;font-size:.78rem}
+/* juegos */
+.mem-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:12px 0}
+.mem{font:inherit;color:var(--tx);min-height:92px;border-radius:14px;border:1px solid var(--bd2);background:linear-gradient(135deg,var(--s3),var(--s2));font-size:1.6rem;font-weight:800;cursor:pointer;padding:8px;transition:transform .25s,background .25s}
+.mem:hover:not(:disabled){transform:translateY(-3px)}.mem.on{font-size:.88rem;font-weight:600;background:#14264f;border-color:var(--cy)}.mem.on.term{background:#241a55;font-weight:800}.mem.ok{background:rgba(52,211,153,.18);border-color:var(--gr);opacity:.9}
+.hud-tf{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:10px}.hearts{font-size:1.3rem;letter-spacing:2px}
+.tf-card{background:linear-gradient(160deg,var(--s2),var(--s1));border:1px solid var(--bd2);border-radius:22px;padding:30px 22px;min-height:130px;display:grid;place-items:center;text-align:center}.tf-q{font-size:1.3rem;font-weight:700;line-height:1.45}
+.tf-row{margin:14px 0;justify-content:center}.tf-b{min-width:150px;font-size:1.05rem;padding:14px 22px}
+.blank-card{margin-bottom:10px;font-size:1.1rem;line-height:2.4}.blank-line select.blank{display:inline-block;width:auto;min-width:130px;margin:0 4px;padding:6px 10px}.blank.ok{border-color:var(--gr);background:rgba(52,211,153,.12)}.blank.bad{border-color:var(--rd);background:rgba(248,113,113,.12)}
+.boss{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,rgba(248,113,113,.14),rgba(139,92,246,.16));border:1px solid rgba(248,113,113,.4);border-radius:16px;padding:10px 14px;margin-bottom:14px}.boss-e{font-size:2.6rem;animation:idle 3s ease-in-out infinite}.bartrack.hp{height:12px;margin-top:4px}.bartrack.hp>i{background:linear-gradient(90deg,#f87171,#fb923c)}
+/* gamificación */
+.stars{letter-spacing:2px;color:var(--am);font-size:.95rem;white-space:nowrap}.stars .off{color:var(--s3)}
+.xpbar{display:flex;flex-direction:column;gap:3px;min-width:96px}.xpbar .t{display:flex;justify-content:space-between;font-size:.78rem;font-weight:800}.xpbar .bartrack{height:6px}
+.chest{font-size:3.4rem;text-align:center;animation:idle 2.2s ease-in-out infinite;cursor:pointer;background:none;border:0}
+.chest.open{animation:jump .6s 2}
+.st .stars{margin-left:auto;font-size:.7rem}
+.node .stars{font-size:.85rem}
+@media(max-width:600px){.slide{padding:18px;min-height:240px}.slide .key{font-size:1.08rem}.tf-b{min-width:120px}}

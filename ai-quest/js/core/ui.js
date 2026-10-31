@@ -22,7 +22,7 @@
 
   function toast(msg, kind) {
     const t = h('div', { class: 'toast ' + (kind || ''), role: 'status' }, msg);
-    document.getElementById('toasts').append(t);
+    const box = document.getElementById('toasts'); box.append(t); while (box.children.length > 3) box.firstChild.remove();
     setTimeout(() => t.remove(), 4200);
   }
 

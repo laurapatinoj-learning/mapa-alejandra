@@ -7,287 +7,287 @@
     {
       "id": "welcome",
       "file": "welcome.mp3",
-      "text": "¡Hola! Soy Nova, tu guía en AI QUEST. Vas a empezar como explorador y terminarás como arquitecto de inteligencia artificial. No necesitas conocimientos previos: avanzaremos paso a paso, practicando. Primero cuéntame cómo te llamas."
+      "text": "¡Hola! Soy Nova, tu guía en AI QUEST. Empezarás como explorador y terminarás como arquitecto de inteligencia artificial. ¿Cómo te llamas?"
     },
     {
       "id": "diag_intro",
       "file": "diag_intro.mp3",
-      "text": "Antes de empezar, un diagnóstico rápido de seis preguntas. No cuenta como nota: me ayuda a conocer tu punto de partida. Si no sabes una respuesta, está bien, elige la que te parezca más razonable."
+      "text": "Seis preguntas rápidas para conocer tu punto de partida. No cuentan como nota."
     },
     {
       "id": "diag_done",
       "file": "diag_done.mp3",
-      "text": "Diagnóstico listo. Tu punto de partida queda guardado y al final de la ruta podremos comparar cuánto avanzaste. Vamos al mapa de niveles."
+      "text": "¡Listo! Tu punto de partida quedó guardado. Vamos al mapa."
     },
     {
       "id": "dashboard",
       "file": "dashboard.mp3",
-      "text": "Este es tu centro de mando. Aquí ves tu progreso, tus misiones y el siguiente paso recomendado. Cuando quieras ayuda, tócame."
+      "text": "Este es tu centro de mando. Toca mi imagen cuando quieras una pista."
     },
     {
       "id": "map",
       "file": "map.mp3",
-      "text": "Este es el mapa de la ruta. Cada nivel desbloquea una habilidad nueva. Para pasar al siguiente necesitas demostrar dominio: ochenta por ciento o más en la evaluación."
+      "text": "Cada nivel desbloquea una habilidad. Para avanzar necesitas ochenta por ciento o más."
     },
     {
       "id": "help_default",
       "file": "help_default.mp3",
-      "text": "Estoy aquí. Lee con calma el objetivo de esta actividad, intenta una respuesta y usa la retroalimentación para ajustar. Equivocarse también enseña."
+      "text": "Lee la consigna, intenta una respuesta y usa la retroalimentación. Equivocarse también enseña."
     },
     {
       "id": "correct_1",
       "file": "correct_1.mp3",
-      "text": "¡Exacto! Buen razonamiento."
+      "text": "¡Exacto!"
     },
     {
       "id": "correct_2",
       "file": "correct_2.mp3",
-      "text": "Muy bien. Eso demuestra que entendiste la idea."
+      "text": "Muy bien."
     },
     {
       "id": "correct_3",
       "file": "correct_3.mp3",
-      "text": "¡Correcto! Sigue así."
+      "text": "¡Correcto, sigue así!"
     },
     {
       "id": "correct_4",
       "file": "correct_4.mp3",
-      "text": "Perfecto, esa es la respuesta."
+      "text": "Perfecto."
     },
     {
       "id": "wrong_1",
       "file": "wrong_1.mp3",
-      "text": "Casi. Revisa la retroalimentación y vuelve a intentarlo, vas bien encaminado."
+      "text": "Casi. Revisa la explicación e inténtalo otra vez."
     },
     {
       "id": "wrong_2",
       "file": "wrong_2.mp3",
-      "text": "No es esa, pero fíjate en la explicación: ahí está la pista."
+      "text": "No es esa, pero la pista está en la explicación."
     },
     {
       "id": "wrong_3",
       "file": "wrong_3.mp3",
-      "text": "Todavía no. Piensa en qué información le falta o le sobra a la respuesta."
+      "text": "Todavía no. Piensa qué falta o qué sobra."
     },
     {
       "id": "motivation_1",
       "file": "motivation_1.mp3",
-      "text": "Cada intento cuenta. Lo importante es entender el porqué, no la velocidad."
+      "text": "Cada intento cuenta."
     },
     {
       "id": "motivation_2",
       "file": "motivation_2.mp3",
-      "text": "Vas construyendo una habilidad real. Un paso más."
+      "text": "Vas construyendo una habilidad real."
     },
     {
       "id": "motivation_3",
       "file": "motivation_3.mp3",
-      "text": "Recuerda: la inteligencia artificial asiste, tú decides."
+      "text": "La IA asiste, tú decides."
     },
     {
       "id": "motivation_4",
       "file": "motivation_4.mp3",
-      "text": "Buen ritmo. Si te cansas, descansar también es parte del aprendizaje."
+      "text": "Buen ritmo. Descansar también es aprender."
     },
     {
       "id": "motivation_5",
       "file": "motivation_5.mp3",
-      "text": "Mira cuánto has avanzado desde el primer nivel."
+      "text": "Mira cuánto has avanzado."
     },
     {
       "id": "level_up",
       "file": "level_up.mp3",
-      "text": "¡Nivel superado! Has demostrado dominio. Se desbloquea el siguiente nivel."
+      "text": "¡Nivel superado! Se desbloquea el siguiente."
     },
     {
       "id": "badge",
       "file": "badge.mp3",
-      "text": "¡Nueva insignia desbloqueada! Ya es parte de tu colección."
+      "text": "¡Nueva insignia desbloqueada!"
     },
     {
       "id": "warning_data",
       "file": "warning_data.mp3",
-      "text": "Atención: no compartas datos personales ni información confidencial con herramientas de inteligencia artificial sin autorización."
+      "text": "Atención: no compartas datos personales ni confidenciales con herramientas no autorizadas."
     },
     {
       "id": "warning_error",
       "file": "warning_error.mp3",
-      "text": "Hubo un error. Revisa los datos e inténtalo de nuevo."
+      "text": "Hubo un error. Revisa e inténtalo de nuevo."
     },
     {
       "id": "warning_sim",
       "file": "warning_sim.mp3",
-      "text": "Recuerda: esto es una simulación local. No se envía nada a un servicio real."
+      "text": "Recuerda: esto es una simulación local."
     },
     {
       "id": "surprise",
       "file": "surprise.mp3",
-      "text": "¡Desafío sorpresa! Una pregunta rápida con puntos extra. ¿Te animas?"
+      "text": "¡Desafío sorpresa! Una pregunta rápida con puntos extra."
+    },
+    {
+      "id": "chest",
+      "file": "chest.mp3",
+      "text": "¡Cofre diario! Abre tu recompensa."
     },
     {
       "id": "streak",
       "file": "streak.mp3",
-      "text": "¡Tu racha de aprendizaje sigue creciendo! La constancia vale más que la prisa."
+      "text": "¡Tu racha sigue creciendo!"
     },
     {
       "id": "certificate",
       "file": "certificate.mp3",
-      "text": "¡Felicitaciones! Completaste la ruta y ahora eres AI Architect. Tu certificado está listo para descargar."
-    },
-    {
-      "id": "sfx_note",
-      "file": "sfx_note.mp3",
-      "text": "Efectos sonoros (clic, acierto, error, desbloqueo, insignia, transición, alerta): se generan en el navegador con Web Audio; no requieren archivos."
+      "text": "¡Felicitaciones! Ahora eres AI Architect. Tu certificado está listo."
     },
     {
       "id": "lvl1_intro",
       "file": "lvl1_intro.mp3",
-      "text": "Nivel uno: AI Explorer. Aquí construyes tu mapa mental de la inteligencia artificial: qué es, qué tipos hay y dónde están sus límites. Practicarás clasificando herramientas y detectando respuestas dudosas."
+      "text": "Nivel uno: AI Explorer. Descubre qué es la inteligencia artificial y dónde están sus límites."
     },
     {
       "id": "lvl1_challenge",
       "file": "lvl1_challenge.mp3",
-      "text": "Reto del nivel uno: decide qué tareas puede resolver una inteligencia artificial por sí sola, cuáles necesitan que un humano revise y cuáles no deben delegarse. Piensa en el riesgo de equivocarse."
+      "text": "Reto: decide qué tareas puede hacer la IA sola y cuáles necesitan supervisión humana."
     },
     {
       "id": "lvl1_done",
       "file": "lvl1_done.mp3",
-      "text": "Lo lograste, explorador. Ya sabes distinguir tipos de inteligencia artificial y cuándo supervisar. Insignia AI Explorer desbloqueada."
+      "text": "¡Lo lograste, explorador! Insignia AI Explorer desbloqueada."
     },
     {
       "id": "lvl2_intro",
       "file": "lvl2_intro.mp3",
-      "text": "Nivel dos: Prompt Initiation. Un prompt es la instrucción que le das a la inteligencia artificial. Aprenderás a pasar de preguntas vagas a instrucciones claras, con contexto, objetivo y resultado esperado."
+      "text": "Nivel dos: Prompt Initiation. Aprende a dar instrucciones claras a la inteligencia artificial."
     },
     {
       "id": "lvl2_challenge",
       "file": "lvl2_challenge.mp3",
-      "text": "Reto del nivel dos: tienes cinco prompts ambiguos. Reescríbelos para que cualquier persona entienda qué se pide, para quién y en qué formato. Cada prompt se evalúa con tres criterios."
+      "text": "Reto: reescribe cinco prompts ambiguos para que cualquiera entienda qué se pide."
     },
     {
       "id": "lvl2_done",
       "file": "lvl2_done.mp3",
-      "text": "Excelente. Ya no le pides cosas a la inteligencia artificial: le das instrucciones claras. Insignia Prompt Builder desbloqueada."
+      "text": "¡Excelente! Ya das instrucciones claras. Insignia Prompt Builder desbloqueada."
     },
     {
       "id": "lvl3_intro",
       "file": "lvl3_intro.mp3",
-      "text": "Nivel tres: Prompt Engineering. Aprenderás un método de ocho componentes para construir prompts estructurados: rol, contexto, objetivo, tarea, restricciones, formato, ejemplos y criterios de calidad."
+      "text": "Nivel tres: Prompt Engineering. Construye prompts estructurados con ocho componentes."
     },
     {
       "id": "lvl3_challenge",
       "file": "lvl3_challenge.mp3",
-      "text": "Reto del nivel tres: construye un prompt profesional para un caso laboral real. Debe incluir los componentes del método y los datos concretos del caso. Se evalúa con diez criterios."
+      "text": "Reto: crea un prompt profesional para un caso laboral, con los componentes del método."
     },
     {
       "id": "lvl3_done",
       "file": "lvl3_done.mp3",
-      "text": "Muy bien. Ya construyes prompts reproducibles que otros pueden usar. Insignia Prompt Engineer desbloqueada."
+      "text": "¡Muy bien! Tus prompts ya son reproducibles. Insignia Prompt Engineer desbloqueada."
     },
     {
       "id": "lvl4_intro",
       "file": "lvl4_intro.mp3",
-      "text": "Nivel cuatro: Advanced Prompting. Verás técnicas para tareas complejas: descomponer, encadenar prompts, pedir salida en JSON, usar razonamiento con acciones, poner guardrails y gestionar la ventana de contexto."
+      "text": "Nivel cuatro: Advanced Prompting. Descompón, encadena y protege tus prompts."
     },
     {
       "id": "lvl4_challenge",
       "file": "lvl4_challenge.mp3",
-      "text": "Reto del nivel cuatro: diseña una secuencia de prompts que automatice un proceso de varios pasos. Cuida el orden, la validación y la revisión humana antes de enviar nada."
+      "text": "Reto: diseña una secuencia de pasos con validación y revisión humana antes de enviar."
     },
     {
       "id": "lvl4_done",
       "file": "lvl4_done.mp3",
-      "text": "Impecable. Ya diseñas secuencias de prompts con validación y control. Insignia Advanced Prompt Master desbloqueada."
+      "text": "¡Impecable! Insignia Advanced Prompt Master desbloqueada."
     },
     {
       "id": "lvl5_intro",
       "file": "lvl5_intro.mp3",
-      "text": "Nivel cinco: IA multimodal. Verás cómo la inteligencia artificial genera y analiza imágenes, audio, video y documentos, y cómo se combinan. Cada modalidad necesita instrucciones distintas y cuidados propios."
+      "text": "Nivel cinco: IA multimodal. Imagen, audio, video y documentos con criterio."
     },
     {
       "id": "lvl5_challenge",
       "file": "lvl5_challenge.mp3",
-      "text": "Reto del nivel cinco: construye una solución que combine texto con imagen, o texto con audio. Describe el flujo, escribe las instrucciones para cada modalidad y no olvides la revisión humana y los derechos."
+      "text": "Reto: crea una solución que combine texto con imagen o con audio, sin olvidar los derechos."
     },
     {
       "id": "lvl5_done",
       "file": "lvl5_done.mp3",
-      "text": "Gran trabajo. Ya combinas modalidades con criterio. Insignia Multimodal Creator desbloqueada."
+      "text": "¡Gran trabajo! Insignia Multimodal Creator desbloqueada."
     },
     {
       "id": "lvl6_intro",
       "file": "lvl6_intro.mp3",
-      "text": "Nivel seis: AI Workflows. Un workflow conecta varios pasos: un disparador, datos, inteligencia artificial, condiciones y acciones. Aprenderás cuándo automatizar y dónde poner validación humana."
+      "text": "Nivel seis: workflows. Conecta pasos, datos y personas en un flujo."
     },
     {
       "id": "lvl6_challenge",
       "file": "lvl6_challenge.mp3",
-      "text": "Reto del nivel seis: diseña el flujo de incorporación de nuevos colaboradores. Empieza con un disparador, usa la inteligencia artificial donde aporta, decide con condiciones y pide aprobación humana antes de las acciones importantes."
+      "text": "Reto: diseña el flujo de incorporación de colaboradores, con aprobación antes de actuar."
     },
     {
       "id": "lvl6_done",
       "file": "lvl6_done.mp3",
-      "text": "Muy bien. Ya diseñas flujos con control y trazabilidad. Insignia Workflow Designer desbloqueada."
+      "text": "¡Muy bien! Insignia Workflow Designer desbloqueada."
     },
     {
       "id": "lvl7_intro",
       "file": "lvl7_intro.mp3",
-      "text": "Nivel siete: agentes de inteligencia artificial. Un agente no solo responde: percibe, planifica y actúa con herramientas para lograr un objetivo. Aprenderás a configurarlo y, sobre todo, a ponerle límites."
+      "text": "Nivel siete: agentes. Un agente actúa, por eso necesita límites."
     },
     {
       "id": "lvl7_challenge",
       "file": "lvl7_challenge.mp3",
-      "text": "Reto del nivel siete: diseña un agente para tramitar solicitudes de capacitación. Define su objetivo, las herramientas que necesita, su memoria, su autonomía y los límites que impiden que haga daño."
+      "text": "Reto: diseña un agente para solicitudes de capacitación, con límites y supervisión."
     },
     {
       "id": "lvl7_done",
       "file": "lvl7_done.mp3",
-      "text": "Excelente criterio. Diseñas agentes útiles y controlados. Insignia AI Agent Builder desbloqueada."
+      "text": "¡Excelente criterio! Insignia AI Agent Builder desbloqueada."
     },
     {
       "id": "lvl8_intro",
       "file": "lvl8_intro.mp3",
-      "text": "Nivel ocho: APIs e integración. Una API es el contrato que permite que dos programas se comuniquen. Aprenderás sobre endpoints, métodos, JSON, claves de acceso y códigos de respuesta, y practicarás con un simulador local."
+      "text": "Nivel ocho: APIs. Endpoints, JSON, claves y códigos de respuesta."
     },
     {
       "id": "lvl8_challenge",
       "file": "lvl8_challenge.mp3",
-      "text": "Reto del nivel ocho: diseña una solicitud conceptual a un modelo de inteligencia artificial. Define método, endpoint, encabezados y un cuerpo JSON válido, cuidando que la clave nunca quede escrita en el código."
+      "text": "Reto: diseña una solicitud a un modelo de IA y cuida que la clave no quede en el código."
     },
     {
       "id": "lvl8_done",
       "file": "lvl8_done.mp3",
-      "text": "Muy bien. Ya lees y diseñas solicitudes a una API. Es la base para entender MCP. Insignia API Integrator desbloqueada."
+      "text": "¡Muy bien! Insignia API Integrator desbloqueada."
     },
     {
       "id": "lvl9_intro",
       "file": "lvl9_intro.mp3",
-      "text": "Nivel nueve: Model Context Protocol, o MCP. Es un protocolo abierto para conectar aplicaciones de inteligencia artificial con herramientas y fuentes de datos externas. No es un modelo ni una técnica de prompts. Antes de empezar, comprobaremos que dominas APIs, JSON, herramientas y agentes."
+      "text": "Nivel nueve: MCP, un protocolo para conectar la IA con herramientas y datos. No es un modelo ni una técnica de prompts."
     },
     {
       "id": "lvl9_challenge",
       "file": "lvl9_challenge.mp3",
-      "text": "Reto del nivel nueve: diseña una arquitectura MCP para un asistente de capacitación. Decide qué es un recurso, qué es un prompt y qué es una herramienta, cómo se conecta, cómo se autoriza y qué salvaguardas pones antes de ejecutar cualquier acción."
+      "text": "Reto: diseña la arquitectura MCP de un asistente de capacitación, con permisos y aprobación."
     },
     {
       "id": "lvl9_done",
       "file": "lvl9_done.mp3",
-      "text": "Impresionante. Ya entiendes y diseñas arquitecturas con MCP, con seguridad desde el principio. Insignia MCP Specialist desbloqueada. Solo falta el proyecto integrador."
+      "text": "¡Impresionante! Insignia MCP Specialist desbloqueada. Falta el proyecto final."
     },
     {
       "id": "lvl10_intro",
       "file": "lvl10_intro.mp3",
-      "text": "Nivel diez: AI Architect. Es el proyecto integrador. Recibirás un caso empresarial y tendrás que decidir si resolverlo con un prompt, un workflow, un agente o MCP, y diseñar la solución con seguridad y criterios de calidad. A veces, la mejor decisión es no complicar las cosas."
+      "text": "Nivel diez: AI Architect. Elige el enfoque correcto y diseña la solución completa."
     },
     {
       "id": "lvl10_challenge",
       "file": "lvl10_challenge.mp3",
-      "text": "Proyecto final: elige uno de los tres casos. Identifica el problema, decide el enfoque, define herramientas, arquitectura, seguridad y calidad, y presenta tu solución. Se evalúa con la rúbrica de cinco criterios."
+      "text": "Proyecto final: elige un caso, decide el enfoque y preséntalo con seguridad y calidad."
     },
     {
       "id": "lvl10_done",
       "file": "lvl10_done.mp3",
-      "text": "Lo lograste. Has pasado de explorador a arquitecto de inteligencia artificial. Piensas, diseñas, experimentas, evalúas y construyes con criterio. Tu certificado está listo."
+      "text": "¡Lo lograste! Pasaste de explorador a arquitecto. Tu certificado está listo."
     }
   ]
 }

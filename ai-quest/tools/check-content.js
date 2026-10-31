@@ -5,6 +5,7 @@ require('../js/core/voice.js'); require('../js/levels/extra.js');
 // El analizador de prompts vive en lab.js (usa DOM); lo reemplazamos por un stub mínimo para las plantillas.
 A.prompt = { analyze: () => ({ score: 0 }) };
 for (let i = 1; i <= 10; i++) require(`../js/levels/level${String(i).padStart(2, '0')}.js`);
+require('../js/levels/more.js');
 let problems = 0; const bad = (m) => { problems++; console.log('✗', m); };
 const ids = new Set();
 for (const n of Object.keys(A.levels)) {
@@ -14,7 +15,7 @@ for (const n of Object.keys(A.levels)) {
   [...L.practice, L.challenge].forEach((a) => {
     if (ids.has(a.id)) bad('id duplicado ' + a.id); ids.add(a.id);
     if (!a.title || !a.goal || !a.xp) bad(`${a.id} sin title/goal/xp`);
-    if (!['mcq','classify','match','order','flashcards','slider','branch','hotspot','explorer','diagram','pipeline','designer','apisim','jsonexplorer','mcpsim'].includes(a.type)) bad(a.id + ' tipo ' + a.type);
+    if (!['mcq','classify','match','order','flashcards','slider','branch','hotspot','explorer','memory','truefalse','fillblank','diagram','pipeline','designer','apisim','jsonexplorer','mcpsim'].includes(a.type)) bad(a.id + ' tipo ' + a.type);
   });
   const need = Math.ceil(0.8 * L.mastery.length); console.log(`L${n}: mastery ${L.mastery.length} preguntas (aciertos mínimos ${need}), práctica ${L.practice.length}`);
   L.mastery.forEach((q, i) => { const a = Array.isArray(q.a) ? q.a : [q.a]; if (!a.every((x) => x >= 0 && x < q.o.length)) bad(`L${n} mastery ${i} respuesta fuera de rango`); if (!q.e) bad(`L${n} mastery ${i} sin explicación`); });
